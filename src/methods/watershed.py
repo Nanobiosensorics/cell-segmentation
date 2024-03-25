@@ -1,9 +1,11 @@
 import numpy as np
 import cv2 as cv
+from src.methods.method import Method, add_execution_time
 
 
-class WatershedMethod:
-    def __predict(self, im_mic):
+class WatershedMethod(Method):
+    @add_execution_time
+    def predict(self, im_mic):
         gray = cv.cvtColor(np.asarray(im_mic), cv.COLOR_RGB2GRAY)
 
         # Thresholding the image.
@@ -36,10 +38,4 @@ class WatershedMethod:
         markers = cv.watershed(np.asarray(im_mic), markers)
 
         return markers
-    
-    def predict_batch(self, im_batch):
-        result = []
-        for img in im_batch:
-            result.append(self.__predict(img))
-        return result
 
