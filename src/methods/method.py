@@ -20,13 +20,11 @@ class Method(ABC):
         pass
 
     # Default batch prediction, for pytorch it's better to override it.
+    @add_execution_time
     def predict_batch(self, im_batch):
         result = []
-        avg_execution_time = 0
         for img in im_batch:
-            markers, elapsed = self.predict(img)
+            markers, _ = self.predict(img)
             result.append(markers)
-            avg_execution_time += elapsed
-        avg_execution_time /= len(im_batch)
-        return result, avg_execution_time
+        return result
 

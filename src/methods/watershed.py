@@ -36,6 +36,8 @@ class WatershedMethod(Method):
         markers[unknown==255] = 0
 
         markers = cv.watershed(np.asarray(im_mic), markers)
+        markers[markers == -1] = 1
+        markers[True] -= 1
 
         return markers
 
