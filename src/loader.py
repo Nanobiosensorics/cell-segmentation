@@ -47,14 +47,15 @@ class ClassificationDataset(Dataset):
 
 # Extracts the relevant data (microscopic images and markers) from the original dataset
 # and saves it as a new dataset. This new dataset can be used as a ClassificationDataset but it's faster.
-def transform_original_dataset(search_dir: str, out_dir: str):
+def compress_original_dataset(search_dir: str, out_dir: str):
     files = get_files_matching(search_dir, '.*_seg.npz$')
     for file in files:
         seg = np.load(file)
         im_mic = np.array(seg['im_mic'], dtype=np.uint8)
         im_markers = np.array(seg['im_markers'], dtype=np.uint8)
 
-        file_name, out_path = os.path.basename(file), os.path.join(out_dir, file_name)
+        file_name = os.path.basename(file)
+        out_path = os.path.join(out_dir, file_name)
         with open(out_path, "wb") as f:
             np.savez(f, im_mic=im_mic, im_markers=im_markers)
 
@@ -63,3 +64,8 @@ def transform_original_dataset(search_dir: str, out_dir: str):
 def create_dataloader(data: Dataset, batch_size=1, shuffle=True):
     return DataLoader(data, batch_size, shuffle)
 
+
+if __name__ == '__main__':
+    if not os.path.exists('./compressed'):
+        os.mkdir('./compressed')
+    compress_original_dataset('./data', './compressed')
