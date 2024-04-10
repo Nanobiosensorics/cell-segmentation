@@ -45,6 +45,20 @@ class ClassificationDataset(Dataset):
         return self.same_size_transform.apply(im_mic, im_markers)
 
 
+# Extracts the relevant data (microscopic images and markers) from the original dataset
+# and saves it as a new dataset. This new dataset can be used as a ClassificationDataset but it's faster.
+def transform_original_dataset(search_dir: str, out_dir: str):
+    files = get_files_matching(search_dir, '.*_seg.npz$')
+    for file in files:
+        seg = np.load(file)
+        im_mic = np.array(seg['im_mic'], dtype=np.uint8)
+        im_markers = np.array(seg['im_markers'], dtype=np.uint8)
+
+        file_name, out_path = os.path.basename(file), os.path.join(out_dir, file_name)
+        with open(out_path, "wb") as f:
+            np.savez(f, im_mic=im_mic, im_markers=im_markers)
+
+
 # Creates a PyTorch dataloader from the provided dataset.
 def create_dataloader(data: Dataset, batch_size=1, shuffle=True):
     return DataLoader(data, batch_size, shuffle)
