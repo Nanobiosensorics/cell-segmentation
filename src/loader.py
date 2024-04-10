@@ -2,6 +2,7 @@ import os
 import re
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
+from dotenv import load_dotenv
 
 
 # Searches through every file in the provided search directory
@@ -66,6 +67,7 @@ def create_dataloader(data: Dataset, batch_size=1, shuffle=True):
 
 
 if __name__ == '__main__':
-    if not os.path.exists('./compressed'):
-        os.mkdir('./compressed')
-    compress_original_dataset('./data', './compressed')
+    load_dotenv()
+    if not os.path.exists(os.getenv('COMPRESSED_DIR')):
+        os.mkdir(os.getenv('COMPRESSED_DIR'))
+    compress_original_dataset(os.getenv('DATA_DIR'), os.getenv('COMPRESSED_DIR'))
